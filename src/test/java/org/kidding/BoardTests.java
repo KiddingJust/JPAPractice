@@ -1,20 +1,22 @@
 package org.kidding;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kidding.domain.BoardVO;
+import org.kidding.domain.QBoardVO;
 import org.kidding.persistence.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 
 import lombok.Setter;
 import lombok.extern.java.Log;
@@ -28,28 +30,148 @@ public class BoardTests {
 	@Setter(onMethod_=@Autowired)
 	private BoardRepository boardRepository;
 	
+	@Test
+	public void testDynamic() {
+		
+//		String type="t";
+//		String keyword = "10";
+//		
+//		//조건문에 맞는지 안맞는지 체크하므로 Boolean?
+//		BooleanBuilder builder = new BooleanBuilder();
+//		
+//		//조건문 추가
+//		QBoardVO board = QBoardVO.boardVO;
+//		if(type.equals("t")) {
+//			
+//			//builder에 구문 추가. 해당 expression을 추가. 
+//			builder.and(
+//			board.title.contains(keyword)
+//			)
+//			//조건 추가. bno가 0보다 큰 경우. 
+//			.and(board.bno.gt(0));
+//		}
+//		
+//		Page<BoardVO> result = 
+//				boardRepository.findAll(builder, PageRequest.of(0,  10));
+//		
+//		log.info("" + result);
+		//조건문 추가
+		
+		
+		String[]  types = {"t", "c"};
+		String keyword = "10";
+		
+		//이렇게 하면 안됨. 다시. 
+//		BooleanBuilder builder = new BooleanBuilder();
+//		QBoardVO board = QBoardVO.boardVO;
+//		
+//		for(int i = 0; i < types.length; i++) {
+//			if(types[i].equals("t")) {
+//				builder.and(board.title.contains(keyword));
+//			}else if(types[i].equals("c")) {
+//				builder.and(board.content.contains(keyword));
+//			}
+//		}
+		
+		BooleanBuilder builder = new BooleanBuilder();
+		QBoardVO board = QBoardVO.boardVO;
+
+		builder.and(board.bno.gt(0));
+		
+		BooleanExpression[] arr = new BooleanExpression[types.length];
+		
+		for(int i = 0; i < types.length; i++) {
+			
+			String type = types[i];
+			
+			BooleanExpression cond = null;
+			
+			if(type.equals("t")) {
+				cond = board.title.contains(keyword);
+			}else if(type.equals("c")) {
+				cond = board.content.contains(keyword);
+				}
+			
+				arr[i] = cond;
+			}
+		
+		//이중에 하나라도? andAnyOf이 or 조건을 붙임. 내부에는 당연히 배열 형태가 들어가야 함. 
+		builder.andAnyOf(arr);
+		
+		Page<BoardVO> result = 
+				boardRepository.findAll(builder, PageRequest.of(0,  10, Sort.Direction.DESC, "bno"));
+		
+		log.info("" + result);
+		
+		
+	}
 	
 	@Test
-	public void testQ1() {
+	public void testWriter() {
 		
+		Page<BoardVO> result
+		= boardRepository.getListByWriter("가아익", PageRequest.of(0, 10));
+	
+		log.info("" + result);
 		
-		Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "bno");
+		result.getContent().forEach(vo -> log.info("" + vo));
 		
-		Page<BoardVO[]> result = boardRepository.getList(pageable);
-		
-		log.info(""+result);
-		
-		log.info("TOTAL PAGES: " + result.getTotalPages());
-		log.info("PAGE: " + result.getNumber());
-		log.info("NEXT: " + result.hasNext());
-		log.info("PREV: " + result.hasPrevious());
-		
-		log.info("P NEXT: " + result.nextPageable());
-		log.info("P PREV: " + result.previousPageable());
-		
-		//여기서 에러 발생. 
-		result.getContent().forEach(vo -> log.info("" + Arrays.toString(vo)));
 	}
+	
+	@Test
+	public void testContent() {
+		
+		Page<BoardVO> result
+		= boardRepository.getListByContent("이상해", PageRequest.of(0, 10));
+	
+		log.info("" + result);
+		
+		result.getContent().forEach(vo -> log.info("" + vo));
+		
+	}
+	
+	@Test
+	public void testTitle() {
+		
+		Page<BoardVO> result
+		= boardRepository.getListByTitle("10", PageRequest.of(0, 10));
+	
+		log.info("" + result);
+		
+		result.getContent().forEach(vo -> log.info("" + vo));
+		
+	}
+	
+	@Test
+	public void testList() {
+		Page<BoardVO> result
+			= boardRepository.getList(PageRequest.of(0, 10));
+		
+		log.info("" + result);
+	}
+	
+//	@Test
+//	public void testQ1() {
+//		
+//		
+//		Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "bno");
+//		//아까 못한 부분. BoardVO가 아니라 Object[]로 바꾸어야함 ㅜㅜ 
+//		Page<Object[]> result = boardRepository.getList(pageable);
+//		
+//		log.info(""+result);
+//		
+//		log.info("TOTAL PAGES: " + result.getTotalPages());
+//		log.info("PAGE: " + result.getNumber());
+//		log.info("NEXT: " + result.hasNext());
+//		log.info("PREV: " + result.hasPrevious());
+//		
+//		log.info("P NEXT: " + result.nextPageable());
+//		log.info("P PREV: " + result.previousPageable());
+//		
+//		//여기서 에러 발생. 
+//		result.getContent().forEach(vo -> log.info("" + Arrays.toString(vo)));
+//	}
+	
 	
 	@Test
 	public void testInsert() {
@@ -99,44 +221,5 @@ public class BoardTests {
 	public void testDelete() {
 		boardRepository.deleteById(10L);
 	}
-	
-	@Test
-	public void testFind1() {
-		
-		//new PageRequest()는 deprecated된 방식으로 build up 패턴을 이용해야 함.
-		Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "bno");
-		
-		//count 쿼리까지 같이 날아감 오우. 
-		Page<BoardVO> result = boardRepository.findByBnoGreaterThan(0L, pageable);
-		
-		log.info(""+result);
-		log.info("TOTAL PAGES: " + result.getTotalPages());
-		log.info("PAGE: " + result.getNumber());
-		log.info("NEXT: " + result.hasNext());
-		log.info("PREV: " + result.hasPrevious());
-		
-		log.info("P NEXT: " + result.nextPageable());
-		log.info("P PREV: " + result.previousPageable());
-		
-		result.getContent().forEach(vo -> log.info(""+vo));
-	}
-	
-//	@Test
-//	public void testFind2() {
-//		
-//		Pageable pageable = PageRequest.of(0, 5, Sort.Direction.DESC, "bno");
-//
-//		boardRepository.findByTitleContainingOrderByBnoDesc("2").forEach(vo -> log.info("" +vo));
-//	}
-	
-	@Test
-    public void testFind4() {
-        
-        //0은 페이지 번호, 10은 10개씩
-        Pageable pageable = PageRequest.of(0, 5, Sort.Direction.DESC,"bno");
-        
-        //메소드이름에 따라 쿼리문 실행이 된다.
-        boardRepository.findByTitleContainingAndBnoGreaterThan("7",0L,pageable).forEach(vo -> log.info(""+vo));
-        
-    }
+
 }

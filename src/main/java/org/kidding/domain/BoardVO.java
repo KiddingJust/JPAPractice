@@ -2,6 +2,7 @@ package org.kidding.domain;
 
 
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -21,8 +22,13 @@ import lombok.Data;
 @Entity
 @Table(name="tbl_board")
 @Data
-public class BoardVO {
+public class BoardVO implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq_board")	//DB에서 자동으로 만들어진다는 것.
 	@SequenceGenerator(name="seq_board", sequenceName="SEQ_BOARD")

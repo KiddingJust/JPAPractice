@@ -1,28 +1,31 @@
 package org.kidding.persistence;
 
-import java.util.List;
-
 import org.kidding.domain.BoardVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
-public interface BoardRepository extends CrudRepository<BoardVO, Long>{
+public interface BoardRepository extends CrudRepository<BoardVO, Long>, QuerydslPredicateExecutor<BoardVO>{
 	
-//	public List<BoardVO> findByBnoGreaterThanOrderByBnoDesc(Long bno);
-	
-//	public List<BoardVO> findByBnoGreaterThan(Long bno, Pageable pageable);
+	//지우고 다시 시작
+	@Query("select b from BoardVO b where bno > 0 order by b.bno desc")
+	public Page<BoardVO> getList(Pageable pageable);
 
-	// * 를 인식하지 못하여 에러가 나는 것. 단순 게시물 처리할거면 * 대신 b로 처리하면 됨. 특정 칼럼만 가져가려면 b.bno 식으로 칼럼 지정 
-	@Query("select b.bno, b.title, b.content from BoardVO b where b.bno > 0")
-	public Page<BoardVO[]> getList(Pageable pageable);
+	//제목으로 검색. 키워드 들어감. 지난번엔 containing을 썼음.
+	@Query("select b from BoardVO b where b.title like %:title% and bno > 0 order by b.bno desc")
+	public Page<BoardVO> getListByTitle(@Param("title") String title, Pageable pageable);
 	
-	//게시판 만들 때 무조건 PageType만 쓰면 돼애
-	public Page<BoardVO> findByBnoGreaterThan(Long bno, Pageable pageable);
+	//제목으로 검색. 키워드 들어감. 지난번엔 containing을 썼음.
+	@Query("select b from BoardVO b where b.content like %:content% and bno > 0 order by b.bno desc")
+	public Page<BoardVO> getListByContent(@Param("content") String content, Pageable pageable);
 
+	//Writer도 똑같은 방식으로 추가하면 됨. 
+	@Query("select b from BoardVO b where b.writer like %:writer% and bno > 0 order by b.bno desc")
+	public Page<BoardVO> getListByWriter(@Param("writer") String writer, Pageable pageable);
 	
-	public List<BoardVO> findByTitleContainingAndBnoGreaterThan(String keyword, Long bno, Pageable pageable);
-
+	//문제는 복합조건. 어노테이션은 코드를 수정할 수 없다는 점이 단점. 동적으로 코드를 변경하기 어려움. 이제 어려운 조건 들어갈 것. 
 	
 }
