@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gaiga.jpashop.jpa.Member;
-import com.gaiga.jpashop.jpa.MemberRepository;
+import com.gaiga.jpashop.domain.Member;
+import com.gaiga.jpashop.repository.MemberRepository;
 
 //스프링관련 테스트임을 명시 @RunWith은 이제 쓰지 않음. 
 @SpringBootTest
@@ -26,7 +26,7 @@ public class MemberRepositoryTest {
 		
 		//when
 		Long savedId = memberRepository.save(member);
-		Member findMember = memberRepository.find(savedId);
+		Member findMember = memberRepository.findOne(savedId);
 
 		//then
 		Assertions.assertThat(findMember.getId()).isEqualTo(member.getId());

@@ -1,4 +1,4 @@
-package com.gaiga.jpashop.jpa;
+package com.gaiga.jpashop.domain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import com.gaiga.jpashop.jpa.item.Item;
+import com.gaiga.jpashop.domain.item.Item;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -45,4 +45,9 @@ public class Category {
 	@OneToMany(mappedBy = "parent")
 	private List<Category> child = new ArrayList<>();
 	
+	//child를 넣으면 부모와 자식 모두에게 들어가야 함. 
+	public void addChildCategory(Category child) {
+		this.child.add(child);
+		child.setParent(this);
+	}
 }

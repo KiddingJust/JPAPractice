@@ -1,4 +1,4 @@
-package com.gaiga.jpashop.jpa.item;
+package com.gaiga.jpashop.domain.item;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;

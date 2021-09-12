@@ -1,4 +1,4 @@
-package com.gaiga.jpashop.jpa.item;
+package com.gaiga.jpashop.domain.item;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -7,10 +7,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@DiscriminatorValue("M")
+@DiscriminatorValue("A")
 @Getter @Setter
-public class Movie extends Item {
+public class Album extends Item {
 
-	private String director;
-	private String actor;
+	private String artist;
+	private String etc;
 }

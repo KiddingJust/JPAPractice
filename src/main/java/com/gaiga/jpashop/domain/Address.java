@@ -1,4 +1,4 @@
-package com.gaiga.jpashop.jpa;
+package com.gaiga.jpashop.domain;
 
 import javax.persistence.Embeddable;
 

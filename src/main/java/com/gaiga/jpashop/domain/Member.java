@@ -1,4 +1,4 @@
-package com.gaiga.jpashop.jpa;
+package com.gaiga.jpashop.domain;
 
 import java.util.ArrayList;
 import java.util.List;
