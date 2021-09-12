@@ -13,6 +13,7 @@ import com.gaiga.jpashop.domain.item.Item;
 import com.gaiga.jpashop.repository.ItemRepository;
 import com.gaiga.jpashop.repository.MemberRepository;
 import com.gaiga.jpashop.repository.OrderRepository;
+import com.gaiga.jpashop.repository.OrderSearch;
 
 import lombok.RequiredArgsConstructor;
 
@@ -62,8 +63,9 @@ public class OrderService {
 		order.cancel();
 	}
 	
-//	//검색 
-//	public List<Order> findOrders(OrderSearch orderSearch){
-//		return orderRepository.findAll(orderSearch);
-//	}
+	//검색 
+	//사실 일반 조회면.. 걍 Controller에서 바로 Repository를 접근해도 문제는 없음. 
+	public List<Order> findOrders(OrderSearch orderSearch){
+		return orderRepository.findAll(orderSearch);
+	}
 }
