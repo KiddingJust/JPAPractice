@@ -11,7 +11,7 @@ import com.gaiga.jpashop.domain.Order;
 import com.gaiga.jpashop.domain.OrderItem;
 import com.gaiga.jpashop.domain.item.Item;
 import com.gaiga.jpashop.repository.ItemRepository;
-import com.gaiga.jpashop.repository.MemberRepository;
+import com.gaiga.jpashop.repository.MemberRepositoryOld;
 import com.gaiga.jpashop.repository.OrderRepository;
 import com.gaiga.jpashop.repository.OrderSearch;
 
@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderService {
 
 	private final OrderRepository orderRepository;
-	private final MemberRepository memberRepository;
+	private final MemberRepositoryOld memberRepository;
 	private final ItemRepository itemRepository;
 	
 	//주문 - 회원id, 상품id, 수량
@@ -66,6 +66,7 @@ public class OrderService {
 	//검색 
 	//사실 일반 조회면.. 걍 Controller에서 바로 Repository를 접근해도 문제는 없음. 
 	public List<Order> findOrders(OrderSearch orderSearch){
-		return orderRepository.findAll(orderSearch);
+//		return orderRepository.findAll(orderSearch);
+		return orderRepository.findAllByString(orderSearch);
 	}
 }

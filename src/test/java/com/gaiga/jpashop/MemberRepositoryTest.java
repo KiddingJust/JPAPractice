@@ -7,14 +7,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gaiga.jpashop.domain.Member;
-import com.gaiga.jpashop.repository.MemberRepository;
+import com.gaiga.jpashop.repository.MemberRepositoryOld;
 
 //스프링관련 테스트임을 명시 @RunWith은 이제 쓰지 않음. 
 @SpringBootTest
 public class MemberRepositoryTest {
 
 	@Autowired
-	MemberRepository memberRepository;
+	MemberRepositoryOld memberRepository;
 	
 	@Test
 	@Transactional

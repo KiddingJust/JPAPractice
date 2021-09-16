@@ -10,7 +10,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gaiga.jpashop.domain.Member;
-import com.gaiga.jpashop.repository.MemberRepository;
+import com.gaiga.jpashop.repository.MemberRepositoryOld;
 
 @SpringBootTest
 @Transactional
@@ -18,7 +18,7 @@ import com.gaiga.jpashop.repository.MemberRepository;
 public class MemberServiceTest {
 
 	@Autowired MemberService memberService;
-	@Autowired MemberRepository memberRepository; 
+	@Autowired MemberRepositoryOld memberRepository; 
 	
 	@Test
 	public void 회원가입() throws Exception {
